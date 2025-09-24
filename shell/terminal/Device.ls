@@ -33,8 +33,6 @@
       # https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h2-Secondary-Device-Attributes-(DA2)
       # https://github.com/microsoft/terminal/blob/main/src/terminal/adapter/adaptDispatch.cpp#L1452
 
-      WScript.Echo attribute-values
-
       [ conformance-level, ...feature-extensions ] = attribute-values / ';'
 
       { conformance-level, feature-extensions }
@@ -42,8 +40,6 @@
     get-terminal-device-feature-extensions = ->
 
       { feature-extensions } = get-terminal-device-attributes!
-
-      WScript.Echo feature-extensions
 
       feature-names = [] ; return feature-names if feature-extensions is void
 
