@@ -84,19 +84,19 @@
       black: text-color!
       red: text-color on
       green: text-color off on
-      navy: text-color off off on
-      celestial: text-color off on on
       curry: text-color on on
+      navy: text-color off off on
       purple: text-color on off on
+      celestial: text-color off on on
       gray: text-color on on on
 
       silver: text-color off off off on
       vermillion: text-color on off off on
       emerald: text-color off on off on
-      blue: text-color off off on on
-      turquoise: text-color off on on on
       yellow: text-color on on off on
+      blue: text-color off off on on
       fuchsia: text-color on off on on
+      turquoise: text-color off on on on
       white: text-color on on on on
 
     text-borders =

@@ -31,6 +31,8 @@
 
         resize: method: (new-window-height, new-window-width) -> window.Resize (argtype '<Number>' {new-window-height}), (argtype '<Number>' {new-window-width})
 
+        resize-screen-buffer: method: (handle) -> window.ResizeScreenBufferToWindow (argtype '<Number>' {handle})
+
     console-window = void ; get-console-window = -> (if console-window is void => console-window := create-console-window!) ; console-window
 
     {

@@ -5,30 +5,38 @@
     { com-filesystem } = dependency 'os.com.FileSystem'
     { string-as-lines } = dependency 'value.string.Text'
     { value-or-error } = dependency 'prelude.error.Value'
+    { delete-file } = dependency 'os.filesystem.File'
 
     { argtype, contextualized } = create-error-context 'os.filesystem.TextFile'
 
-    io-modes = reading: 1, writing: 2, appending: 8 ; fso = com-filesystem!
+    io-modes = reading: 1, writing: 2, appending: 8
 
-    open-textstrean = (filepath, mode) -> fso.OpenTextFile (argtype '<String>' {filepath}), (argtype '<Number|Void>' {mode}), yes
+    open-textstream = (filepath, mode) -> com-filesystem!OpenTextFile (argtype '<String>' {filepath}), (argtype '<Number|Void>' {mode}), yes
 
     use-stream = (stream, stream-task) -> result = stream-task stream ; stream.close! ; result
 
-    try-read-textfile = (filepath) -> value-or-error -> open-textstream filepath, io-modes.reading |> use-stream _ , (.ReadAll!)
+    read-textfile = (filepath) -> filepath |> open-textstream _ , io-modes.reading |> use-stream _ , (.ReadAll! unless it.AtEndOfStream)
 
-    try-read-textfile-lines = (filepath) -> failure-result = try-read-textfile filepath ; { value: content, error } = failure-result => return .. unless error is void ; content |> string-as-lines
+    try-read-textfile = (filepath) -> value-or-error -> read-textfile filepath
 
-    try-write-textfile = (filepath, content) -> value-or-error -> open-textstream filepath, io-modes.writing |> use-stream _ , (.Write (argtype '<String>' {content}))
+    read-textfile-lines = (filepath) -> filepath |> read-textfile |> string-as-lines
+
+    try-read-textfile-lines = (filepath) -> value-or-error -> read-textfile-lines filepath
+
+    write-textfile = (filepath, content) -> argtype '<String>' {content} ; open-textstream filepath, io-modes.writing |> use-stream _ , (.Write content)
+
+    try-write-textfile = (filepath, content) -> value-or-error -> write-textfile filepath, content
 
     try-consume-textfile = (filepath) ->
 
-      { value: content, error } = try-read-textfile filepath ; return { error: contextualized error } if error?
-      { value, error } = try-delete-file filepath ; return { error: contextualized error } if error?
+      value-or-error ->
 
-      { value: content }
+        content = read-textfile filepath
+        delete-file filepath
+        content
 
     {
-      try-read-textfile, try-read-textfile-lines,
-      try-write-textfile,
+      read-textfile, try-read-textfile, read-textfile-lines, try-read-textfile-lines,
+      write-textfile, try-write-textfile,
       try-consume-textfile
     }

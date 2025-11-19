@@ -84,59 +84,60 @@
 
         lifecycle: notifier: <[ on-startup before-execution after-execution on-idle on-error on-shutdown ]>
 
-        start: method: (loop-handler) ->
+        execute: method: (loop-handler) ->
 
-          try
+          # try
 
-            argtype '<Function|Undefined>' {loop-handler}
+          argtype '<Function|Undefined>' {loop-handler}
 
-            context = application: @, background-processing: {}
+          context = application: @, background-processing: {}
 
-            execution = cycles: 0, execution-statistics-analysis-algorithm: default-execution-statistics-analysis-algorithm, throttling-algorithm: default-throttling-algorithm
+          execution = cycles: 0, execution-statistics-analysis-algorithm: default-execution-statistics-analysis-algorithm, throttling-algorithm: default-throttling-algorithm
 
-            context <<< { execution }
+          context <<< { execution }
 
-            @lifecycle.notify <[ on-startup ]> context
+          @lifecycle.notify <[ on-startup ]> context
 
-            loop
+          loop
 
-              try
+            try
 
-                break if finished
+            break if finished
 
-                execution <<< start: now!
+            execution <<< start: now!
 
-                @lifecycle.notify <[ before-execution ]> context
+            @lifecycle.notify <[ before-execution ]> context
 
-                loop-handler context if loop-handler isnt void
+            loop-handler context if loop-handler isnt void
 
-                @lifecycle.notify <[ after-execution ]> context
+            @lifecycle.notify <[ after-execution ]> context
 
-                execution <<< end: now!
+            execution <<< end: now!
 
-                { background-processing } = context
+            { background-processing } = context
 
-                background-processing <<< start: now!
+            background-processing <<< start: now!
 
-                @lifecycle.notify <[ on-idle ]> context
+            @lifecycle.notify <[ on-idle ]> context
 
-                background-processing <<< end: now!
+            background-processing <<< end: now!
 
-                { execution-statistics-analysis-algorithm } = execution
+            { execution-statistics-analysis-algorithm } = execution
 
-                execution-statistics-analysis = execution-statistics-analysis-algorithm context
+            execution-statistics-analysis = execution-statistics-analysis-algorithm context
 
-                { throttling-algorithm } = execution
+            { throttling-algorithm } = execution
 
-                throttling-algorithm execution-statistics-analysis, context
+            throttling-algorithm execution-statistics-analysis, context
 
-                execution.cycles++
+            execution.cycles++
 
-              catch error => @lifecycle.notify <[ on-error ]> context, error
+            # catch error => @lifecycle.notify <[ on-error ]> error, context
 
-          catch error => @lifecycle.notify <[ on-error ]> context, error
+          # catch error => @lifecycle.notify <[ on-error ]> error, context
 
-          finally => @lifecycle.notify <[ on-shutdown ]> context
+          # finally =>
+          @lifecycle.notify <[ on-shutdown ]> context
 
     {
       create-application

@@ -4,6 +4,7 @@
     { create-error-context } = dependency 'prelude.error.Context'
     { com-object } = dependency 'os.com.Object'
     { create-instance } = dependency 'value.Instance'
+    { value-or-error } = dependency 'prelude.error.Value'
 
     { argtype, create-error } = create-error-context 'os.shell.console.Input'
 
@@ -157,6 +158,19 @@
 
     console-input = void ; get-console-input = -> (if console-input is void then console-input := create-console-input!) ; console-input
 
+    input-event-matches = (one, another) ->
+
+      for member-name, member-value of another
+        return no if one[ member-name ] isnt member-value
+
+      yes
+
+    read-input-text = (timeout) -> create-console-input!read-text timeout
+
+    try-read-input-text = (timeout) -> value-or-error -> read-input-text timeout
+
     {
-      get-console-input
+      get-console-input,
+      input-event-matches,
+      read-input-text, try-read-input-text
     }

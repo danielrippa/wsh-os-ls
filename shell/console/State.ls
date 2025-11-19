@@ -4,8 +4,6 @@
     { create-error-context } = dependency 'prelude.error.Context'
     { com-object } = dependency 'os.com.Object'
 
-    { value-as-string } = dependency 'prelude.reflection.Value'
-
     { argtype } = create-error-context 'os.shell.console.ConsoleState'
 
     console-components = ->

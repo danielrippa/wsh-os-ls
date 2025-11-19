@@ -1,0 +1,8 @@
+
+  do ->
+
+    minify = ->
+
+    {
+      minify
+    }

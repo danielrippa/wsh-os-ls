@@ -5,6 +5,7 @@
     { create-text-attributes: text-style } = dependency 'os.shell.console.TextAttributes'
     { object-member-names } = dependency 'value.Object'
     { get-timestamp } = dependency 'value.Date'
+    { get-console-window } = dependency 'os.shell.console.Window'
 
     { argtype, argerror, context } = create-error-context 'os.shell.console.ScreenBuffer'
 
@@ -141,6 +142,10 @@
         cursor: getter: -> cursor
         viewport: getter: -> viewport
 
+        resize: method: (height, width, resize-window = no) -> screen-buffer.Resize (argtype '<Number>' {height}), (argtype '<Number>' {width}), (argtype '<Boolean>' {resize-window})
+
+        resize-to-window: method: -> screen-buffer.ResizeToWindow!
+
         get-palette-color: method: (index) -> color-palette.get-color index
 
         set-palette-color: method: (index, rgb) -> color-palette.set-color index, rgb
@@ -158,13 +163,13 @@
           getter: -> screen-buffer.TextAttributes
           setter: (text-attributes) -> screen-buffer.TextAttributes = (argtype '<Number>' {text-attributes})
 
-        set-ink-style: method: (ink-style = {}) -> style = text-style @text-style! ; style.set-ink (argtype '<Oject>' {ink-style}) ; @set-text-style style.value!
+        set-ink-style: method: (ink-style = {}) -> ({ argtype } = context 'set-ink-style') ; style = text-style @get-text-style! ; style.set-ink (argtype '<Object>' {ink-style}) ; @set-text-style style.get-value!
 
-        set-paper-style: method: (paper-style = {}) -> style = text-style @text-style! ; style.set-paper (argtype '<Oject>' {paper-style}) ; @set-text-style style.value!
+        set-paper-style: method: (paper-style = {}) -> ({ argtype } = context 'set-paper-style') ; style = text-style @get-text-style! ; style.set-paper (argtype '<Object>' {paper-style}) ; @set-text-style style.get-value!
 
-        set-border-style: method: (border-style = {}) -> style = text-style @text-style! ; style.set-borders (argtype '<Oject>' {border-style}) ; @set-text-style style.value!
+        set-border-style: method: (border-style = {}) -> ({ argtype } = context 'set-border-style') ; style = text-style @text-style! ; style.set-borders (argtype '<Object>' {border-style}) ; @set-text-style style.get-value!
 
-        set-inverted-style: method: (enabled-state) -> style = text-style @text-style! ; style.set-inverted (argtype '<Boolean>' {enabled-state}) ; @set-text-style style.value!
+        set-inverted-style: method: (enabled-state) -> style = text-style @text-style! ; style.set-inverted (argtype '<Boolean>' {enabled-state}) ; @set-text-style style.get-value!
 
         copy-area: method: (row, column, height, width, screen-buffer-handle = @handle!) -> screen-buffer.CopyArea (argtype '<Number>' {row}), (argtype '<Number>' {column}), (argtype '<Number>' {height}), (argtype '<Number>' {width}), (argtype '<Number>' {screen-buffer-handle})
 
@@ -209,7 +214,7 @@
 
       { argtype, argerror } = context 'create-screen-manager'
 
-      screen-buffers-by-name = {}
+      screen-buffers-by-name = 'console': create-screen-buffer 'console'
       active-screen-buffer-name = void
 
       instance = create-instance do
@@ -264,7 +269,9 @@
 
     screen-buffer-manager = void ; get-screen-buffer-manager = -> (if screen-buffer-manager is void then screen-buffer-manager := create-screen-buffer-manager!) ; screen-buffer-manager
 
+    get-console-screen-buffer = -> get-screen-buffer-manager!get-screen-buffer 'console'
+
     {
-      create-screen-buffer-cursor, create-screen-buffer-color-palette, create-screen-buffer-viewport, create-screen-buffer,
-      get-screen-buffer-manager
+      create-screen-buffer-cursor, create-screen-buffer-color-palette, create-screen-buffer-viewport,
+      get-screen-buffer-manager, get-console-screen-buffer
     }
