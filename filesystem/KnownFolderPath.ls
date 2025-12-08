@@ -16,6 +16,7 @@
       bit-bucket: 0x0a
       desktop: 0x00
       desktop-directory: 0x10
+      drives: 0x11
       profile: 0x28
       program-files: 0x26
       program-files-x86: 0x2a

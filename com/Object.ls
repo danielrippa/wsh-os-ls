@@ -24,6 +24,23 @@
 
       com-automation-instance
 
+    com-object-as-object = (some-com-object) ->
+
+      properties = {} ; e = new Enumerator some-com-object.Properties_
+
+      loop
+
+        break if e.atEnd!
+
+        item = e.item!
+
+        properties[ item.Name ] = item.Value
+
+        e.moveNext!
+
+      properties
+
     {
-      com-object, get-com-object
+      com-object, get-com-object,
+      com-object-as-object
     }

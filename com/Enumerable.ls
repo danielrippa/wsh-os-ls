@@ -7,7 +7,7 @@
 
     id = -> it
 
-    get-enumeration-items = (enumerable, fn = id) ->
+    enumerable-as-array = (enumerable, fn = id) ->
 
       enumerator = new Enumerator (argtype '<Object>' {enumerable}) ; argtype '<Function>' {fn} ; index = 0
 
@@ -24,5 +24,5 @@
       items
 
     {
-      get-enumeration-items
+      enumerable-as-array
     }
