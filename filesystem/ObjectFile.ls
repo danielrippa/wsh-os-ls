@@ -2,15 +2,16 @@
   do ->
 
     { create-error-context } = dependency 'prelude.error.Context'
-    { try-read-textfile-lines } = dependency 'os.filesystem.TextFile'
+    { try-read-textfile-lines, write-textfile, try-write-textfile } = dependency 'os.filesystem.TextFile'
     { file-exists } = dependency 'os.filesystem.File'
     { trim-space } = dependency 'value.string.Whitespace'
     { string-interval, string-split-by-first-segment } = dependency 'value.string.Segment'
-    { keep-array-items, each-array-item } = dependency 'value.Array'
-    { camel-case } = dependency 'value.string.Case'
+    { keep-array-items, each-array-item, map-array-items } = dependency 'value.Array'
+    { camel-case, kebab-case } = dependency 'value.string.Case'
     { value-or-error } = dependency 'prelude.error.Value'
+    { lines-as-string } = dependency 'value.string.Text'
 
-    { create-error, contextualized } = create-error-context 'os.filesystem.ObjectFile'
+    { argtype, create-error, contextualized } = create-error-context 'os.filesystem.ObjectFile'
 
     is-member-line = ->
 
@@ -42,7 +43,18 @@
 
     try-read-objectfile = (filepath) -> value-or-error -> read-objectfile filepath
 
+    write-objectfile = (filepath, object) ->
+
+      argtype '<String>' {filepath} ; argtype '<Object>' {object}
+
+      content = [ "#{ kebab-case key } #value" for key, value of object ] |> lines-as-string
+
+      write-textfile filepath, content
+
+    try-write-objectfile = (filepath, object) -> value-or-error -> write-objectfile filepath, object
+
     {
-      read-objectfile, try-read-objectfile
+      read-objectfile, try-read-objectfile,
+      write-objectfile, try-write-objectfile
     }
 

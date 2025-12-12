@@ -47,15 +47,6 @@
 
     try-read-stdin = (timeout) -> value-or-error -> read-stdin timeout
 
-    get-key = ->
-
-      loop
-
-        input-event = get-console-input!get-input-event!
-        continue if event is void
-
-
-
     {
       debug,
       stderr, lf-stderr, stderr-lf, stderr-lines,

@@ -9,11 +9,11 @@
 
     { create-error, argtype } = create-error-context 'os.shell.Clipboard'
 
-    create-clipboard = -> com-object 'Shell.Clipboard'
+    clipboard = void ; get-clipboard = -> (if clipboard is void then clipboard := com-object 'Shell.Clipboard') ; clipboard
 
     get-clipboard-text = ->
 
-      json = create-clipboard!GetText! ; { value: clipboard-text, error: error-message } = eval "(#json)"
+      json = get-clipboard!GetText! ; { value: clipboard-text, error: error-message } = eval "(#json)"
       if error-message isnt void => throw create-error error-message
 
       clipboard-text
@@ -22,7 +22,7 @@
 
     set-clipboard-text = (text) ->
 
-      json = create-clipboard!SetText (argtype '<String>' {text}) ; { error: error-message } = eval "(#json)"
+      json = get-clipboard!SetText (argtype '<String>' {text}) ; { error: error-message } = eval "(#json)"
       if error-message isnt void => throw create-error error-message
 
     try-set-clipboard-text = (text) -> value-or-error -> set-clipboard-text text
